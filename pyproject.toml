@@ -1,0 +1,27 @@
+[project]
+name = "omron-connect-api"
+version = "0.0.1"
+description = "Library to communicate with OMRON connect API"
+authors = [{ name = "Francois Perron", email = "fperron@gmail.com" }]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Home Automation",
+]
+
+requires-python = ">=3.13"
+dependencies = ["aiohttp"]
+
+[project.urls]
+Homepage = "https://github.com/happydev-ca/omron-connect-api"
+Issues = "https://github.com/happydev-ca/omron-connect-api/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["omronconnectapi"]
