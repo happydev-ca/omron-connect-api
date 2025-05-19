@@ -11,13 +11,14 @@ from test.omron_connect_server_for_test import OmronConnectServerForTest
 class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
     email_address = 'user@gmail.com'
     password = 'password'
+    country_code = 'CA'
 
     async def test_authenticates_with_email_address_and_password(self):
         with OmronConnectServerForTest() as server:
             server.prepare_login_response({'success': True, 'accessToken': 'any-token', 'expiresIn': 3600})
 
             async with aiohttp.ClientSession() as session:
-                api = OmronConnectApi(self.email_address, self.password, session)
+                api = OmronConnectApi(self.email_address, self.password, self.country_code, session)
                 await api.async_authenticate()
 
                 server.assert_called_with(url='/app/login',
@@ -37,7 +38,7 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
         with OmronConnectServerForTest() as server:
             server.prepare_login_response({'success': True, 'accessToken': 'any-token', 'expiresIn': 3600})
             async with aiohttp.ClientSession() as session:
-                api = OmronConnectApi(self.email_address, self.password, session)
+                api = OmronConnectApi(self.email_address, self.password, self.country_code, session)
                 await api.async_authenticate()
                 await api.async_authenticate()
 
@@ -46,7 +47,7 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
                                                headers={'Content-Type': 'application/json'},
                                                json={
                                                    'app': 'OCM',
-                                                   'country': 'CA',
+                                                   'country': self.country_code,
                                                    'emailAddress': self.email_address,
                                                    'password': self.password
                                                })
@@ -56,7 +57,7 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
             server.prepare_login_response({'success': False})
 
             async with aiohttp.ClientSession() as session:
-                api = OmronConnectApi(self.email_address, self.password, session)
+                api = OmronConnectApi(self.email_address, self.password, self.country_code, session)
 
                 with self.assertRaises(OmronConnectAPIError):
                     await api.async_authenticate()
@@ -66,7 +67,7 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
             server.prepare_login_response({'success': False})
 
             async with aiohttp.ClientSession() as session:
-                api = OmronConnectApi(self.email_address, self.password, session)
+                api = OmronConnectApi(self.email_address, self.password, self.country_code, session)
                 api.headers['Authorization'] = 'any-token'
 
                 with self.assertRaises(OmronConnectAPIError):
@@ -102,7 +103,7 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
             }
             server.prepare_blood_pressure_readings_response(0, response)
             async with aiohttp.ClientSession() as session:
-                api = OmronConnectApi(self.email_address, self.password, session)
+                api = OmronConnectApi(self.email_address, self.password, self.country_code, session)
                 readings = await api.async_get_blood_pressure_readings()
 
                 server.assert_called_with(
@@ -120,7 +121,7 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
             server.prepare_blood_pressure_readings_response(last_synced_time=1747615042001)
 
             async with aiohttp.ClientSession() as session:
-                api = OmronConnectApi(self.email_address, self.password, session)
+                api = OmronConnectApi(self.email_address, self.password, self.country_code, session)
                 api.last_synced_time = 1747615042001
                 await api.async_get_blood_pressure_readings()
 

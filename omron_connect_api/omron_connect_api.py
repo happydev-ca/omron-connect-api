@@ -14,9 +14,10 @@ class OmronConnectApi:
     base_url = 'https://oi-api.ohiomron.com'
     TOKEN_EXPIRED = timedelta(seconds=1)
 
-    def __init__(self, email_address: str, password: str, session: aiohttp.ClientSession):
+    def __init__(self, email_address: str, password: str, country_code: str, session: aiohttp.ClientSession):
         self.email_address = email_address
         self.password = password
+        self.country_code = country_code
         self.session = session
         self.headers = {'Content-Type': 'application/json'}
         self.expires_at = datetime.now() - self.TOKEN_EXPIRED
@@ -27,7 +28,12 @@ class OmronConnectApi:
             return
 
         url = '/app/login'
-        json = {'app': 'OCM', 'country': 'CA', 'emailAddress': self.email_address, 'password': self.password}
+        json = {
+            'app': 'OCM',
+            'country': self.country_code,
+            'emailAddress': self.email_address,
+            'password': self.password
+        }
         async with await self._post(url, json) as response:
             body = await response.json()
             self.headers['Authorization'] = body['accessToken']
