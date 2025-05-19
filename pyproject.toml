@@ -1,6 +1,6 @@
 [project]
 name = "omron-connect-api"
-version = "0.0.4"
+version = "0.1.0"
 description = "Library to communicate with OMRON connect API"
 authors = [{ name = "Francois Perron", email = "fperron@gmail.com" }]
 readme = "README.md"
