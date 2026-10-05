@@ -26,7 +26,7 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
                                           headers={'Content-Type': 'application/json'},
                                           json={
                                               'app': 'OCM',
-                                              'country': 'CA',
+                                              'country': self.country_code,
                                               'emailAddress': self.email_address,
                                               'password': self.password
                                           })

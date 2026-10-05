@@ -35,6 +35,14 @@ make test
 make build
 ```
 
+### Logging
+
+Enable debug level to log API requests and responses.
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
+
 ### Release version
 
 ```shell
