@@ -79,27 +79,28 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
     async def test_get_blood_pressure_readings(self):
         with OmronConnectServerForTest() as server:
             token = server.prepare_login_response()
+            data = [
+                {
+                    'measurementDate': '1747615042000',
+                    'diastolic': 82,
+                    'systolic': 103,
+                    'pulse': 62,
+                    'countIrregularHeartBeat': 2,
+                    'movementDetect': 1
+                },
+                {
+                    'measurementDate': '1747615062000',
+                    'diastolic': 72,
+                    'systolic': 100,
+                    'pulse': 64,
+                    'countIrregularHeartBeat': 0,
+                    'movementDetect': 0
+                }
+            ]
             response = {
                 'success': True,
                 'lastSyncedTime': 1747615042001,
-                'data': [
-                    {
-                        'measurementDate': '1747615042000',
-                        'diastolic': 82,
-                        'systolic': 103,
-                        'pulse': 62,
-                        'countIrregularHeartBeat': 2,
-                        'movementDetect': 1
-                    },
-                    {
-                        'measurementDate': '1747615062000',
-                        'diastolic': 72,
-                        'systolic': 100,
-                        'pulse': 64,
-                        'countIrregularHeartBeat': 0,
-                        'movementDetect': 0
-                    }
-                ]
+                'data': data
             }
             server.prepare_blood_pressure_readings_response(0, response)
             async with aiohttp.ClientSession() as session:
@@ -111,7 +112,7 @@ class TestOmronConnectAPI(unittest.IsolatedAsyncioTestCase):
                     method='GET',
                     headers={'Content-Type': 'application/json', 'Authorization': token})
 
-                expected_readings = [BloodPressureReadingResponse.from_json(reading) for reading in response['data']]
+                expected_readings = [BloodPressureReadingResponse.from_json(reading) for reading in data]
                 self.assertEqual(readings, expected_readings)
                 self.assertEqual(api.last_synced_time, 1747615042001)
 

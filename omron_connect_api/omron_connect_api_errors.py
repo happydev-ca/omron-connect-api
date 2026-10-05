@@ -8,3 +8,9 @@ class OmronConnectAPIError(aiohttp.ClientResponseError):
         self.status = error_response.status
         self.message = error_response.reason
         self.headers = error_response.headers
+
+
+class CountryCodeNotSupportedError(ValueError):
+    def __init__(self, country_code: str):
+        super().__init__(f'Country code not supported: {country_code}')
+        self.country_code = country_code

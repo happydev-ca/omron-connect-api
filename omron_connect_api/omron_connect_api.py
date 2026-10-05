@@ -5,16 +5,17 @@ from typing import List
 import aiohttp
 
 from . import OmronConnectAPIError, BloodPressureReading
+from .base_url import base_url_for
 from .blood_pressure.blood_pressure_reading_response import BloodPressureReadingResponse
 
 LOGGER: Logger = getLogger(__package__)
 
 
 class OmronConnectApi:
-    base_url = 'https://oi-api.ohiomron.com'
     TOKEN_EXPIRED = timedelta(seconds=1)
 
     def __init__(self, email_address: str, password: str, country_code: str, session: aiohttp.ClientSession):
+        self.base_url = base_url_for(country_code)
         self.email_address = email_address
         self.password = password
         self.country_code = country_code
@@ -69,6 +70,6 @@ class OmronConnectApi:
         raise OmronConnectAPIError(response)
 
     @staticmethod
-    async def _log(url: str, response: aiohttp.ClientResponse, headers: dict, json: dict = None) -> None:
+    async def _log(url: str, response: aiohttp.ClientResponse, headers: dict, json: dict | None = None) -> None:
         LOGGER.debug(
             f"{url} : Request[[ headers=[{headers}] body=[{json}] ]] - Response[[ status=[{response.status}] headers=[{dict(response.headers)}] body=[{await response.text()}] ]]")

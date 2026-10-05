@@ -6,6 +6,8 @@ Library to communicate with OMRON connect API.
 
 Only the blood pressure readings are provided in the current version.
 
+Only `CA` and `US` country codes are currently supported, feel free to submit a PR to add support for other country codes.
+
 ## Usage
 
 ```python
